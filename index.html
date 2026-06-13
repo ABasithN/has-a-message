@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For You</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f9f8f6;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+  }
+  #lock-screen, #message-screen {
+    width: 100%;
+    max-width: 460px;
+  }
+  .year-tag {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 2.5rem;
+  }
+  .headline {
+    font-size: 34px;
+    font-weight: 500;
+    color: #1a1a1a;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .sub {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    max-width: 340px;
+  }
+  .input-row {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+    margin-bottom: 10px;
+  }
+  #code-input {
+    flex: 1;
+    font-size: 15px;
+    padding: 13px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #1a1a1a;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s;
+  }
+  #code-input::placeholder { color: #bbb; }
+  #code-input:focus { border-color: #999; }
+  #unlock-btn {
+    padding: 13px 22px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #1a1a1a;
+    color: #f9f8f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    font-family: inherit;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  #unlock-btn:hover { opacity: 0.78; }
+  #error-msg {
+    font-size: 12px;
+    color: #c0392b;
+    height: 16px;
+    letter-spacing: 0.02em;
+  }
+  .footer-note {
+    margin-top: 3.5rem;
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.6;
+  }
+  #message-screen { display: none; }
+  .msg-from {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 2rem;
+  }
+  .rule {
+    width: 100%;
+    height: 0.5px;
+    background: #e0e0e0;
+    margin-bottom: 2.5rem;
+  }
+  .msg-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #1a1a1a;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    margin-bottom: 3rem;
+  }
+  .sign-off {
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  .reset-btn {
+    margin-top: 3rem;
+    display: inline-block;
+    font-size: 11px;
+    color: #bbb;
+    background: none;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-family: inherit;
+    padding: 0;
+  }
+  .reset-btn:hover { color: #666; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #111; color: #f0ede8; }
+    .headline { color: #f0ede8; }
+    .sub { color: #999; }
+    #code-input { background: #1c1c1c; border-color: #333; color: #f0ede8; }
+    #code-input:focus { border-color: #666; }
+    #unlock-btn { background: #f0ede8; color: #111; }
+    .msg-text { color: #f0ede8; }
+    .rule { background: #2a2a2a; }
+  }
+</style>
+</head>
+<body>
+
+<div id="lock-screen">
+  <p class="year-tag">2013 — 2026</p>
+  <h1 class="headline">Basith left something<br>here for you.</h1>
+  <p class="sub">You have a code. It was meant for you. Enter it below and it'll find you.</p>
+  <div class="input-row">
+    <input id="code-input" type="text" placeholder="enter your code" autocomplete="off" spellcheck="false" />
+    <button id="unlock-btn">Open</button>
+  </div>
+  <p id="error-msg"></p>
+  <p class="footer-note">Each code opens one message.<br>Only yours. Only for you.</p>
+</div>
+
+<div id="message-screen">
+  <p class="msg-from">a note, before I go</p>
+  <div class="rule"></div>
+  <p class="msg-text" id="msg-content"></p>
+  <p class="sign-off">— Basith</p>
+  <button class="reset-btn" id="reset-btn">← back</button>
+</div>
+
+<script>
+  const messages = {
+    "Raghusan666": "Raghu San. Not even sure where to begin from, but thank you for being the mentor I needed when I looked for; for being the rock in my life when I seemed; for being my critic, when I had to hear it.",
+    "AjaySan333": "Thank you for everything you did, Ajay. I hope I have been a good colleague for you.",
+    "Sanchaybaba44": "Starboy, thank you for having me be a part of your work life, and beyond. Appreciate it and all the fun times you have powered for me."
+  };
+
+  const input = document.getElementById('code-input');
+  const btn = document.getElementById('unlock-btn');
+  const errMsg = document.getElementById('error-msg');
+  const lockScreen = document.getElementById('lock-screen');
+  const messageScreen = document.getElementById('message-screen');
+  const msgContent = document.getElementById('msg-content');
+  const resetBtn = document.getElementById('reset-btn');
+
+  function unlock() {
+    const code = input.value.trim();
+    if (messages[code]) {
+      errMsg.textContent = '';
+      lockScreen.style.display = 'none';
+      messageScreen.style.display = 'block';
+      msgContent.textContent = messages[code];
+    } else {
+      errMsg.textContent = "That code doesn't match. Try again.";
+      input.style.borderColor = '#c0392b';
+      setTimeout(() => { input.style.borderColor = ''; }, 1500);
+    }
+  }
+
+  btn.addEventListener('click', unlock);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') unlock(); });
+  resetBtn.addEventListener('click', () => {
+    messageScreen.style.display = 'none';
+    lockScreen.style.display = 'block';
+    input.value = '';
+    errMsg.textContent = '';
+  });
+</script>
+
+</body>
+</html>
